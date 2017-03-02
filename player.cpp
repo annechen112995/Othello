@@ -20,6 +20,7 @@ Player::Player(Side side) {
     board = new Board();
  
     player_a = side;
+    std::cerr << "Player_A is " << side << std::endl;
     if (player_a == BLACK) {
         player_opp = WHITE;
     }
