@@ -4,6 +4,7 @@
 #include <iostream>
 #include "common.hpp"
 #include "board.hpp"
+#include <vector>
 using namespace std;
 
 class Player {
@@ -21,6 +22,10 @@ protected:
 	Board *board;
 	Side player_a; 
 	Side player_opp;
+
+	vector<int> arr_score;
+    int minimax(Board *node, int depth, bool max_player);
+    Move * next_move;
 
 };
 

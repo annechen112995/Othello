@@ -8,6 +8,8 @@ enum Side {
 class Move {
    
 public:
+    //int mini_max;
+    
     int x, y;
     Move(int x, int y) {
         this->x = x;
@@ -20,6 +22,7 @@ public:
 
     void setX(int x) { this->x = x; }
     void setY(int y) { this->y = y; }
+
 };
 
 #endif

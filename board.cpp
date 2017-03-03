@@ -1,4 +1,11 @@
+#include <iostream>
 #include "board.hpp"
+
+#define SIZE 8
+#define CENTER 1
+#define CORNER 5
+#define EDGE 3
+#define DANGER -4
 
 /*
  * Make a standard 8x8 othello board and initialize it to the standard setup.
@@ -161,6 +168,135 @@ int Board::countBlack() {
 int Board::countWhite() {
     return taken.count() - black.count();
 }
+
+/*
+ + * Counts the score from the heuristic function of the current state of the board
+ + */
+int Board::countScore(Side side) {
+    int stone_a = 0, stone_opp = 0, score = 0; // board position score
+ 
+    Side other;
+    if (side == BLACK) {
+        other = WHITE;
+    }
+    else {
+        other = BLACK;
+    }
+
+    stone_a += countCorner(side);
+    stone_a += countEdge(side);
+    stone_a += countCenter(side);
+    stone_opp += countCorner(other);
+    stone_opp += countEdge(other);
+    stone_opp += countCenter(other);
+
+    //board position score = (# stones you have) - (# stones your opponent has)
+    score = stone_a - stone_opp;
+
+    return score;
+}
+
+/*
+ * Counts the score made by corenrs
+ */
+int Board::countCorner(Side side) {
+    int score = 0;
+    if (get(side, 0, 0)) {
+        score += CORNER;
+    }
+    if (get(side, 0, SIZE-1)) {
+        score += CORNER;
+    }
+    if (get(side, SIZE-1, 0)) {
+        score += CORNER;
+    }
+    if (get(side, SIZE-1, SIZE-1)) {
+        score += CORNER;
+    }
+    return score;
+}
+
+/*
+ * Counts the score made by edges
+ */
+int Board::countEdge(Side side) {
+    int score = 0;
+    for (int i = 1; i < SIZE - 1; i++) { // top and bottom edges
+        if (i != 1 && i != SIZE - 2) {
+            if (get(side, i, 0)) {
+                score += EDGE;
+            }
+            if (get(side, i, SIZE - 1)) {
+                score += EDGE;
+            }
+        }
+        else { // (1, 0), (6, 0), (1, 7), (6, 7) are in the danger zone
+            if (get(side, i, 0)) {
+                score += DANGER;
+            }
+            if (get(side, i, SIZE - 1)) {
+                score += DANGER;
+            }
+        }
+    }
+    for (int j = 1; j < SIZE - 1; j++) { // left and right edges
+        if (j != 1 && j != SIZE - 2) {
+            if (get(side, 0, j)) {
+                score += EDGE;
+            }
+            if (get(side, SIZE - 1, j)) {
+                score += EDGE;
+            }
+        }
+        else { // (0, 1), (0, 6), (7, 1), (7, 6) are in the danger zone
+            if (get(side, 0, j)) {
+                score += DANGER;
+            }
+            if (get(side, SIZE - 1, j)) {
+                score += DANGER;
+            }            
+        }
+    }
+    return score;
+}
+
+/*
+ * Counts the score made by normal squares which are not on the edges
+ */
+int Board::countCenter(Side side) {
+    int score = 0;
+    for (int i = 1; i < SIZE - 1; i++) {
+        for (int j = 1; j < SIZE - 1; j++) {
+            // (1, 1), (6, 1), (6, 1), (6, 6) are in the danger zone
+            if ((i==1 && j==1) || (i==1 && j==SIZE-2) || (i==SIZE-2 && j==1) || (i==SIZE-2 && j==SIZE-2)) {
+                if (get(side, i, j)) {
+                    score += DANGER;
+                }
+            }
+            else {
+                if (get(side, i, j)) {
+                    score += CENTER;
+                }
+            }
+        }
+    }
+    return score;
+}
+
+/*
+ * Returns a vector of all the possible moves at the current board
+ */
+void Board::allmoves(std::vector<Move *> &vec, Side side) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            Move *current = new Move(i, j);
+            if (checkMove(current, side)) {
+                vec.push_back(current);
+            }
+        }
+    }
+}
+
 
 /*
  * Sets the board state given an 8x8 char array where 'w' indicates a white
