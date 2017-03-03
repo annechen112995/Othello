@@ -18,7 +18,7 @@ public:
     // Flag to tell if the player is running within the test_minimax context
     bool testingMinimax;
 
-protected: 
+private: 
 	Board *board;
 	Side player_a; 
 	Side player_opp;
