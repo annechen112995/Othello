@@ -117,61 +117,11 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      */
 
     board->doMove(opponentsMove, player_opp);
-
-    // top left most move
-    /* for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            Move *move_a = new Move(i, j);
-            if (board->checkMove(move_a, player_a)) {
-                board->doMove(move_a, player_a);
-                return move_a;
-            }
-        }
-    }
-
-    return nullptr;
-    */
-
-    // Simple Player
-    /*
-    // go through all the squares and check if they have possible moves
-    // then copy board and simulate the move and check the score
-    int current_score, best_score = INT_MIN;
-    int count = 0;
-    Move *current = new Move(0, 0);
-    Move *best = new Move(0, 0);
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            current->setX(i);
-            current->setY(j);
-            if (board->checkMove(current, player_a)) {
-                count++;
-                Board *temp = board->copy();
-                temp->doMove(current, player_a);
-                current_score = temp->countScore(player_a);
-                if (current_score > best_score) {
-                    best_score = current_score;
-                    best->setX(current->getX());
-                    best->setY(current->getY());
-                }
-                delete temp;
-            }
-        }
-    }
-    delete current;
-    if (count == 0) {
-        return NULL;
-    }
-    else {
-        board->doMove(best, player_a);
-        return best;
-    }
-    */
       
     // Minimax Algorithm
-  
     // use helper function: Player::minimax
     // the best move at current state is saved at variable next_move
+
     if (!board->hasMoves(player_a)) {
         return NULL;
     }
